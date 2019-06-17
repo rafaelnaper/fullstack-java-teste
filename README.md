@@ -52,7 +52,9 @@ Após a configuração do usuário estar Ok, vamos configurar a fila no servidor
 * Acessar no browser o endereço http://127.0.0.1:9990/management
 * Informar usuário e senha que foi criado para gerenciar o servidor
 * Acessar Configuration -> Subsystems -> Messaging -> Destinations -> Add
+
 Conforme a imagem abaixo :
+
 ![alt text][passo1]
 
 [passo1]: https://github.com/rafaelnaper/fullstack-java-teste/blob/master/conf-wildfly/conf-fila/passo1.png?raw=true "Passo 1"
@@ -60,7 +62,9 @@ Conforme a imagem abaixo :
 * Informar no campo **nome** o valor **persist**
 * Informar no campo **nome JNDI** o valor **java:/jms/queues/persist** 
 * Selecionar o checkbox **Durable** (para que a mensagem não seja apagada do servidor quando o mesmo for desligado.)
+
 Conforme a imagem abaixo :
+
 ![alt text][passo2]
 
 [passo2]: https://github.com/rafaelnaper/fullstack-java-teste/blob/master/conf-wildfly/conf-fila/passo2.png?raw=true "Passo 2"
