@@ -43,7 +43,29 @@ Antes de inicializar o servidor **WildFly**, referencie o arquivo **standalone-f
 
 * WildFly
 
-Necessário configurar o data source com as suas credenciais de acesso.
+Após efetuar a instalação do servidor, seguir os passos conforme a documentação orienta para adicionar um novo usuário para acessar as configurações do servidor.
+
+https://docs.jboss.org/author/display/WFLY8/add-user+utility
+
+Após a configuração do usuário estar Ok, vamos configurar a fila no servidor, seguindo os passos :
+
+* Acessar no browser o endereço http://127.0.0.1:9990/management
+* Informar usuário e senha que foi criado para gerenciar o servidor
+* Acessar Configuration -> Subsystems -> Messaging -> Destinations -> Add
+Conforme a imagem abaixo :
+![alt text][passo1]
+
+[passo1]: https://github.com/rafaelnaper/fullstack-java-teste/blob/master/conf-wildfly/conf-fila/passo1.png?raw=true "Passo 1"
+
+* Informar no campo **nome** o valor **persist**
+* Informar no campo **nome JNDI** o valor **java:/jms/queues/persist** 
+* Selecionar o checkbox **Durable** (para que a mensagem não seja apagada do servidor quando o mesmo for desligado.)
+Conforme a imagem abaixo :
+![alt text][passo2]
+
+[passo2]: https://github.com/rafaelnaper/fullstack-java-teste/blob/master/conf-wildfly/conf-fila/passo2.png?raw=true "Passo 2"
+
+Pronto! Após a fila estar configurada, vamos configurar o data source com as suas credenciais de acesso.
 
 Incluir o trecho abaixo no arquivo **standalone-full.xml**, dentro da tag **<datasources>**. Lembre-se de substituir **{usuario}** e **{senha}** por seu usuário e senha de conexão com o database.
 
@@ -74,3 +96,9 @@ O **WildFly** não possui o jar do connector **MySQL** em sua instalação, port
 Ambos arquivos estão dentro do diretório **conf-wildfly** que se encontra na raiz do projeto.
 
 **Obs.:** Não esquecer de mencionar o arquivo **standalone-full.xml** antes de iniciar o **WildFly**, para que possamos nos beneficiar de todos os recursos JEE cujo gerenciamento fica a cargo do servidor (mensageria, gerenciameto da conexão com o banco de dados, etc).
+
+# Acesso a aplicação
+
+Para acessar a aplicação, basta digitar no browser a url http://localhost:8080/consulta-viagem-ws/
+
+**Obs..:** Para consultar os registros cadastrados no banco de dados, copiar o script **scripts-db/db-query** e colar no *MySQL*.
