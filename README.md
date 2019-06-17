@@ -1,58 +1,76 @@
-# Por que trabalhar na Lemontech
+# Consulta de Solicitações de Viagem
 
-A Lemontech é uma empresa especializada no desenvolvimento de softwares que contribuem na Gestão das Viagens Corporativas.
-Têm como principais objetivos, reduzir custos e tornar os processos mais dinâmicos.
-O Sistema Lemontech, é utilizado por corporações e agências de viagens que buscam economia, eficiência e automação dos seus negócios.ditamos no poder da tecnologia para melhorar continuamente a vida das pessoas. 
+Aplicação JEE 7 com arquitetura componentizada, sendo o componente **consulta-viagem-ws** responsável por consumir o web service de consulta de viagens da Lemontech, apresentar as informações de Aéreo em uma página web e enviar essas informações para uma fila para que o módulo **persiste-viagem-db** possa salva-las no banco de dados a qualquer momento, independente do serviço de consulta estar no ar ou não.
 
-Se você tem espírito e comportamento empreendedor, muita disposição e proatividade para trabalhar em uma empresa em franca expansão, você é um forte candidato :)
+# Arquitetura utilizada no Sistema
 
-Como Desenvolvedor Full-stack você irá atuar no desenvolvimento de soluções em arquitetura Java Web MVC, Java EE, integrações com outros sistemas (SOAP, REST, JMS) e soluções escaláveis, participando de todo o processo de desenvolvimento, desde tomadas de decisões à codificação e testes.
+A aplicação foi desenvolvida seguindo a especificação JEE 7 afim de nos beneficiar de seus recursos oferecidos, sendo eles :
 
-# O que preciso fazer?
+* Fácil configuração e utilização de Mensageria (JMS)
+* Facilidades do CDI
 
-Vamos ser práticos e diretos, se você quer trabalhar conosco siga os passos abaixo:
+Para hospedar a aplicação foi utilizado o servidor **WildFly**, para que fosse possível se beneficiar de um ambiente transacional totalmente gerenciado pelo servidor e também na facilidade de utilização do middleware de mensageria **HornetQ** que está embutido nele.
 
-* Faça um "fork" desse projeto para sua conta GitHub.
-* Implemente o desafio descrito no tópico abaixo.
-* Faça um push para seu repositório com o desafio implementado.
-* Envie um email para (rh@lemontech.com.br) avisando que finalizou o desafio com a url do seu fork.
-* Cruze os dedos e aguarde nosso contato.
+### Tecnologias
 
-# O desafio (Consulta de Solicitações de Viagens)
+* JDK 8
+* JEE 7
+* CDI 1.2
+* JTA 1.3
+* JPA 2.1
+* JSF 2.2
+* MAVEN 3.6
+* JUNIt 4.2
+* POWERMOCK 2.0.2
+* MOCKITO 2.0.2
 
-Você deverá criar uma aplicação consumidora de nossa API de webservice para consultar solicitações de viagens e persistir em banco de dados os dados de produtos Aéreos:
+### Banco de dados
 
-Endpoint: https://treinamento.lemontech.com.br/wsselfbooking/WsSelfBookingService?wsdl
+* MySQL 8.0
 
-Credenciais para autenticação: Seré enviada por email para o candidato.
+### Server
 
-Método a ser utilizado: pesquisarSolicitacao.
+* WildFly 8.2.1
+* HornetQ 2.4
 
-Arquitetura: Pode-se utilizar qualquer recurso da especificação JavaEE.
+# Configuração do ambiente
 
-### Requisito
+* Banco de dados
 
-Consultar as solicitações de viagens filtrando pelos últimos 3 meses e separar apenas as que contenham produtos Aéreos.
+Para criação do banco de dados e suas respectivas tabelas, executar o script **db-create.sql** localizado em **scripts-db\db-create.sql** no diretório raiz do projeto.
 
-Criar um banco de dados / tabela para persistir as informações da solicitação de viagem com as infromações básicas: Nome do Passageiro, CIA Aérea, Data/Hora de Saída e Chegada, Cidades de Origem e Destino.
+Antes de inicializar o servidor **WildFly**, referencie o arquivo **standalone-full.xml** para que ele utilize as configurações de mensageria do servidor já declaradas.
 
-Segregar o serviço de consulta ao WS e o de persistência no BD, imaginando que poderiam estar em um ambiente distribuído e após consulta ao Webservice a viagem possa ser enviada de alguma forma para um local onde o serviço que fará a persistência faça a leitura desses objetos e efetive a gravação no banco de dados.
+* WildFly
 
-Propor solução utilizando padrões e funcionalidades JavaEE.
+Necessário configurar o data source com as suas credenciais de acesso.
 
-### Arquitetura e documentação
+Incluir o trecho abaixo no arquivo **standalone-full.xml**, dentro da tag **<datasources>**. Lembre-se de substituir **{usuario}** e **{senha}** por seu usuário e senha de conexão com o database.
 
-No arquivo README do projeto explique o funcionamento e a arquitetura da solução adotada na sua implementação. Descreva também os passos para executar corretamente seu projeto.
+```
+<datasource jndi-name="java:jboss/datasources/fullstackDS" pool-name="fullstackDS" enabled="true">
+ <connection-url>jdbc:mysql://localhost:3306/fullstack_java_teste?useTimezone=true&amp;serverTimezone=UTC</connection-url>
+ <driver>mysql</driver>
+ <security>
+  <user-name>{usuario}</user-name>
+  <password>{senha}</password>
+ </security>
+</datasource>
+```
 
-### Avaliação
+Também é necessário fazer a inclusão do driver do **MySQL** dentro da tag **<drivers>**
 
-Entre os critérios de avaliação estão:
+```
+<driver name="mysql" module="com.mysql">
+ <driver-class>com.mysql.cj.jdbc.Driver</driver-class>
+</driver>
+```
 
-* Facilidade de configuração do projeto
-* Performance
-* Código limpo e organização
-* Documentação de código
-* Documentação do projeto (readme)
-* Arquitetura
-* Boas práticas de desenvolvimento
-* Design Patterns
+O **WildFly** não possui o jar do connector **MySQL** em sua instalação, portanto, é necessário criar uma estrutura de diretórios nomeados **mysql/main** dentro de **<dir_instalacao_wildfly>/modules/system/layers/base/com** e incluir os seguintes arquivos:
+
+  - module.xml
+  - mysql-connector-java-8.0.16.jar
+
+Ambos arquivos estão dentro do diretório **conf-wildfly** que se encontra na raiz do projeto.
+
+**Obs.:** Não esquecer de mencionar o arquivo **standalone-full.xml** antes de iniciar o **WildFly**, para que possamos nos beneficiar de todos os recursos JEE cujo gerenciamento fica a cargo do servidor (mensageria, gerenciameto da conexão com o banco de dados, etc).
