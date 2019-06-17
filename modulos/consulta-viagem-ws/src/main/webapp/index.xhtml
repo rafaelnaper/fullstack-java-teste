@@ -1,0 +1,69 @@
+<html xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+ 
+ <head>
+  <title>Desafio Lemontech - Consulta de solicitações de viagens</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+ </head>
+ 
+ <h:body>
+	<div class="container">
+	
+		<h2>Consulta de solicitações de viagens</h2>
+		<p>Os dados abaixo carregados serão persistidos no banco de dados sob demanda</p>
+		
+		<br></br>
+		<br></br>
+		
+		<h:dataTable value="#{consultaViagemBean.solicitacaoDeViagens}" var="solicitacaoViagem" styleClass="table">
+			<h:column>
+				<f:facet name="header">Id Solicitação</f:facet>
+				#{solicitacaoViagem.idSolicitacao}
+			</h:column>
+			
+			<h:column>
+				<h:dataTable value="#{solicitacaoViagem.aereos}" var="aereo" styleClass="table">
+					<h:column>
+						<f:facet name="header">Aéreo Id</f:facet>
+						#{aereo.id}
+					</h:column>
+					<h:column>
+						<f:facet name="header">Passageiro</f:facet>
+						<ui:repeat value="#{aereo.passageiros}" var="passageiro">
+				            #{passageiro.nome} #{passageiro.sobrenome}
+				        </ui:repeat>
+					</h:column>
+					<h:column>
+						<f:facet name="header">Cia. Aérea</f:facet>
+						#{aereo.ciaAerea}
+					</h:column>
+					<h:column>
+						<f:facet name="header">Horário Saída</f:facet>
+						<h:outputText value="#{aereo.dataHoraSaida}">
+							<f:convertDateTime timeZone="America/Sao_Paulo" pattern="dd/MM/yyyy HH:mm" />
+						</h:outputText>
+					</h:column>
+					<h:column>
+						<f:facet name="header">Horário Chegada</f:facet>
+						<h:outputText value="#{aereo.dataHoraChegada}">
+		  					<f:convertDateTime timeZone="America/Sao_Paulo" pattern="dd/MM/yyyy HH:mm" />
+						</h:outputText>
+					</h:column>
+					<h:column>
+						<f:facet name="header">Origem</f:facet>
+						#{aereo.cidadeOrigem}
+					</h:column>
+					<h:column>
+						<f:facet name="header">Destino</f:facet>
+						#{aereo.cidadeDestino}
+					</h:column>				
+				</h:dataTable>
+			</h:column>
+		</h:dataTable>
+	</div>
+ </h:body>
+</html>

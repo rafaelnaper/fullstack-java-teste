@@ -1,0 +1,1 @@
+wsimport C:\Naper\workspace-lemon\tentativa-wsimport\wsdl\WsSelfBookingService.wsdl -keep -d ./class -s ./source -wsdllocation C:\Naper\workspace-lemon\tentativa-wsimport\wsdl\WsSelfBookingService.wsdl
